@@ -67,7 +67,7 @@ def playerStandings():
     """
     conn = connect()
     c = conn.cursor()
-    c.execute("SELECT players.id, players.name, (select count(*) from matches where matches.winner = players.id) as wins, (select count(*) from matches where matches.winner = players.id or matches.loser = players.id) as matches from players;")
+    c.execute("SELECT players.id, players.name, (select count(*) from matches where matches.winner = players.id) as wins, (select count(*) from matches where matches.winner = players.id or matches.loser = players.id) as matches from players order by wins desc;")
     playersRecord = c.fetchall()
     conn.commit() 
     conn.close()
@@ -101,5 +101,10 @@ def swissPairings():
         id2: the second player's unique id
         name2: the second player's name
     """
-
-
+    players = playerStandings();
+    spair=()
+    x = 0
+    for i in range(0,len(players)/2):
+        spair = spair + (players[x][:2] + players[x+1][:2],)
+        x=x+2
+    return spair
