@@ -7,12 +7,12 @@
 -- these lines here.
 
 CREATE TABLE players (
- id serial UNIQUE PRIMARY KEY ,
+ id serial PRIMARY KEY ,
  name text
 );
 
 CREATE TABLE matches (
  id serial PRIMARY KEY,
- winner integer,
- loser integer
+ winner integer references players (id),
+ loser integer references players (id)
 );

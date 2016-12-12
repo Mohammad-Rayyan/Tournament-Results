@@ -15,7 +15,7 @@ def deleteMatches():
     """Remove all the match records from the database."""
     conn = connect()
     c = conn.cursor()
-    c.execute("DELETE * FROM matches;")
+    c.execute("DELETE FROM matches;")
     conn.commit() 
     conn.close()
 
@@ -23,7 +23,7 @@ def deletePlayers():
     """Remove all the player records from the database."""
     conn = connect()
     c = conn.cursor()
-    c.execute("DELETE * FROM players;")
+    c.execute("DELETE FROM players;")
     conn.commit() 
     conn.close()
 
@@ -31,9 +31,11 @@ def countPlayers():
     """Returns the number of players currently registered."""
     conn = connect()
     c = conn.cursor()
-    c.execute("SELECT COUNT(*) as num FROM players;")
+    c.execute("SELECT COUNT(id) as num FROM players;")
+    count = c.fetchone()
     conn.commit() 
     conn.close()
+    return count[0]
 
 def registerPlayer(name):
     """Adds a player to the tournament database.
@@ -46,7 +48,7 @@ def registerPlayer(name):
     """
     conn = connect()
     c = conn.cursor()
-    c.execute("INSERT INTO players (name) VALUES (%s);",(name))
+    c.execute("INSERT INTO players (name) VALUES (%s);",(name,))
     conn.commit() 
     conn.close()
 
@@ -65,9 +67,11 @@ def playerStandings():
     """
     conn = connect()
     c = conn.cursor()
-    c.execute("")
+    c.execute("SELECT players.id, players.name, (select count(*) from matches where matches.winner = players.id) as wins, (select count(*) from matches where matches.winner = players.id or matches.loser = players.id) as matches from players;")
+    playersRecord = c.fetchall()
     conn.commit() 
     conn.close()
+    return playersRecord
 
 def reportMatch(winner, loser):
     """Records the outcome of a single match between two players.
@@ -78,7 +82,7 @@ def reportMatch(winner, loser):
     """
     conn = connect()
     c = conn.cursor()
-    c.execute("INSERT INTO matches (winner, loser) VALUES (%s,%s);",(winner, loser))
+    c.execute("INSERT INTO matches (winner, loser) VALUES (%s,%s);",(winner, loser,))
     conn.commit() 
     conn.close() 
  
