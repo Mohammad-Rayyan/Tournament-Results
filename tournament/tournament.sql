@@ -16,3 +16,9 @@ CREATE TABLE matches (
  winner integer references players (id),
  loser integer references players (id)
 );
+
+CREATE VIEW wins as 
+	select players.id as a, count(matches.id) as wins from players left join matches on players.id = matches.winner group by players.id;
+
+CREATE VIEW matches_c as
+	select players.id as a, count(matches.id) as matches from players left join matches on players.id = matches.winner or players.id = matches.loser group by players.id;

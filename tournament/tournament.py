@@ -67,7 +67,7 @@ def playerStandings():
     """
     conn = connect()
     c = conn.cursor()
-    c.execute("SELECT players.id, players.name, (select count(*) from matches where matches.winner = players.id) as wins, (select count(*) from matches where matches.winner = players.id or matches.loser = players.id) as matches from players order by wins desc;")
+    c.execute("SELECT players.id, players.name, wins.wins, matches_c.matches from players left join wins on players.id = wins.a left join matches_c on players.id = matches_c.a order by wins desc;")
     playersRecord = c.fetchall()
     conn.commit() 
     conn.close()
